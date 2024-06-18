@@ -1,7 +1,7 @@
 # What it is?
-Upon analyzing and reversing a malware sample, we sometimes discover that the malware is abusing a Telegram bot for C2 (Command and Control) communication. As analysts, we may want to gain insight into the bot's communication with the infected device. 
+Upon analyzing and reversing a malware sample, we sometimes discover that the malware is abusing a Telegram bot for C2 (Command and Control) communication. As analysts, we may want to gain insight into the bot's communication with the infected device. Thus, this script attempts to dump all messages from the Telegram C2. 
 
-This script attempts to dump all messages from the Telegram C2. The script is inspired by the [Turncoat](https://github.com/DODC/turncoat) project. However, I found that Turncoat does not retrieve the latest messages after brute-forcing all the messages, and we need to perform multi command execution to run against multiple bots. So, this script comes to the rescue.
+The script is inspired by the [Turncoat](https://github.com/DODC/turncoat) project. However, I found that Turncoat does not retrieve the latest messages after brute-forcing all the messages, and we need to perform multi command execution to run against multiple bots. So, this script comes to the rescue.
 
 # What it does?
 - The code uses the `copyMessage` API to copy every message (by brute-forcing the message ID from 1 until the end) to our own chat ID.
