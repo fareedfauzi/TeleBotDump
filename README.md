@@ -36,10 +36,8 @@ Upon analyzing and reversing a malware sample, we sometimes discover that the ma
 3. Go to Telegram, find the bot by username and join the bot.
 4. Get your chat ID from the bot using https://t.me/chatIDrobot.
 5. Open `config.txt` and input all the token IDs, chat IDs of the attacker, and your chat ID.
-
-Each line in the file should have the format: `<BOT TOKEN ID> <ATTACKER CHAT ID> <YOUR CHAT ID>`.
-
-Example of the config file format:
+    - Each line in the file should have the format: `<BOT TOKEN ID> <ATTACKER CHAT ID> <YOUR CHAT ID>`.
+    - Example of the config file format:
 ```
 7342309939:AAFSgOLG_25mu-QZE8M7bSPufJJNknYj1JY 467115391 7093134421
 1234567890:ABCDeFGH_1ijKlMnOpQrStUvWxYz 987654321 7093134421
