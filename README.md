@@ -3,6 +3,12 @@ Upon analyzing and reversing a malware sample, we sometimes discover that the ma
 
 The script is inspired by the [Turncoat](https://github.com/DODC/turncoat) project. However, I found that Turncoat does not retrieve the latest messages after brute-forcing all the messages, and we need to perform multi command execution on the script to run against multiple bots. So, this script comes to the rescue.
 
+Features:
+1. Perform both bruteforce all messages and retrieve updates for the latest messages.
+2. Have option to only retrieve updates for the latest messages.
+3. Support multibots by running multi-thread execution for each bots in the given config file.
+4. Allow dynamically addition fpr a new bot while the script running.
+
 # What it does?
 - The code uses the `copyMessage` API to copy every message (by brute-forcing the message ID from 1 until the end) to our own chat ID.
 - It switches to the `getUpdates` API once the brute-force returns many errors for message IDs (indicating there are no more messages). Then it waits/observes for the latest messages using `getUpdates`.
