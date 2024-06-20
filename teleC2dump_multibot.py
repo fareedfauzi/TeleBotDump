@@ -4,7 +4,6 @@ import time
 import threading
 import logging
 from logging.handlers import RotatingFileHandler
-from queue import Queue
 
 # Error handling logger. Max 1GB size of log.
 def setup_logger():
@@ -82,8 +81,8 @@ def processing_botData(botkey, attacker_chat_id, chatid, mode):
         start_id = 1
         last_update_id = None
 
-        # Brute force all messages
-        if mode == "both":
+        if mode != 'updateonly':
+            # Brute force all messages
             brute_force_messages(botkey, botname, chatid, attacker_chat_id, start_id)
 
         # Retrieve new messages updates
@@ -91,74 +90,77 @@ def processing_botData(botkey, attacker_chat_id, chatid, mode):
     except Exception as e:
         logging.error(f'Error in processing_botData - Bot: {botkey} - Error: {e}')
 
-def process_new_bot_tokens(queue, mode):
+def add_new_bot(mode):
     while True:
-        if not queue.empty():
-            botkey, attacker_chat_id, chatid = queue.get()
+        try:
+            print()
+            print("Got a new bot token for the same campaign?")
+            botkey = input("Enter new bot token: ")
+            attacker_chat_id = input("Enter attacker chat ID: ")
+            chatid = input("Enter your chat ID: ")
+            print()
             thread = threading.Thread(target=processing_botData, args=(botkey, attacker_chat_id, chatid, mode))
             thread.start()
-            thread.join()
+        except Exception as e:
+            logging.error(f'Error adding new bot: {e}')
 
 def main():
-    if len(sys.argv) < 2 or len(sys.argv) > 4:
+    if len(sys.argv) not in (2, 4):
         print("Usage: python3 teleC2dump_multibot.py <config_file> [-mode updateonly]")
         sys.exit(1)
 
-    if sys.argv[1] in ('-h', '--help'):
+    if sys.argv[1] in ('-h'):
         print("""
-                Usage: python3 teleC2dump_multibot.py <config_file> [-mode updateonly]
+Usage:  python3 teleC2dump_multibot.py <config_file> [-mode updateonly]
 
-                Options:
-                -h, --help       Show this help message and exit
+Example:
+        # Default mode, perform both brute-force and update activity
+        python3 teleC2dump_multibot.py config.txt
 
-                Arguments:
-                config_file      Configuration file containing bot tokens, attacker chat IDs, and your chat ID.
-                                 Each line in the file should have the format: <BOT TOKEN ID> <ATTACKER CHAT ID> <YOUR CHAT ID>
-                -mode updateonly Only perform updates, skip brute force
+        # Update-only mode, perform only update activity
+        python3 teleC2dump_multibot.py config.txt -mode updateonly
 
-                Example of config file format:
-                7342309939:AAFSgOLG_25mu-QZE8M7bSPufJJNknYj1JY 467115391 7093036821
-                1234567890:ABCDeFGH_1ijKlMnOpQrStUvWxYz 987654321 7093036821
-            """)
+Options:
+        -h, --help       Show this help message and exit
+
+Arguments:
+        config_file         Configuration file containing bot tokens, attacker chat IDs, and your chat ID.
+                            Each line in the file should have the format: <BOT TOKEN ID> <ATTACKER CHAT ID> <YOUR CHAT ID>
+        -mode updateonly    Only perform updates, skip brute force
+
+Example of config file format:
+        7342309939:AAFSgOLG_25mu-QZE8M7bSPufJJNknYj1JY 467115391 7093036821
+        1234567890:ABCDeFGH_1ijKlMnOpQrStUvWxYz 987654321 7093036821
+""")
         sys.exit(0)
     
     config_file = sys.argv[1]
-    mode = "both"
-    
-    if len(sys.argv) == 3 and sys.argv[2] == "-mode updateonly":
-        mode = "updateonly"
-    
+    mode = 'default'
+    if len(sys.argv) == 4 and sys.argv[2] == '-mode' and sys.argv[3] == 'updateonly':
+        mode = 'updateonly'
+
     setup_logger()
     print("Sit back and relax, TeleC2Dump script is running...")
 
-    # Queue for handling new bot tokens
-    queue = Queue()
-
     # Perform multithread process for each of the bot in config_file
+    threads = []
     with open(config_file, 'r') as file:
         lines = file.readlines()
         for i in lines:
             try:
                 botkey, attacker_chat_id, chatid = i.strip().split()
-                queue.put((botkey, attacker_chat_id, chatid))
+                thread = threading.Thread(target=processing_botData, args=(botkey, attacker_chat_id, chatid, mode))
+                threads.append(thread)
+                thread.start()
             except ValueError:
                 logging.error(f'Invalid format in config file: {i}')
                 pass
 
-    # Start a thread to process the new bot tokens
-    threading.Thread(target=process_new_bot_tokens, args=(queue, mode)).start()
+    add_thread = threading.Thread(target=add_new_bot, args=(mode,))
+    add_thread.start()
 
-    # Allow dynamic addition of new bot tokens from your latest findings
-    while True:
-        print("Got new token ID? Enter the new bot token, attacker chat ID, and chat ID (separated by spaces), or 'exit' to quit:")
-        user_input = input().strip()
-        if user_input.lower() == 'exit':
-            break
-        try:
-            botkey, attacker_chat_id, chatid = user_input.split()
-            queue.put((botkey, attacker_chat_id, chatid))
-        except ValueError:
-            print("Invalid format! Please enter in the format: <BOT TOKEN ID> <ATTACKER CHAT ID> <YOUR CHAT ID>")
+    for thread in threads:
+        thread.join()
 
 if __name__ == "__main__":
     main()
