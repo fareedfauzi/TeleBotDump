@@ -106,19 +106,19 @@ def add_new_bot(mode):
 
 def main():
     if len(sys.argv) not in (2, 4):
-        print("Usage: python3 teleC2dump_multibot.py <config_file> [-mode updateonly]")
+        print("Usage: python3 teleC2dump.py <config_file> [-mode updateonly]")
         sys.exit(1)
 
     if sys.argv[1] in ('-h'):
         print("""
-Usage:  python3 teleC2dump_multibot.py <config_file> [-mode updateonly]
+Usage:  python3 teleC2dump.py <config_file> [-mode updateonly]
 
 Example:
         # Default mode, perform both brute-force and update activity
-        python3 teleC2dump_multibot.py config.txt
+        python3 teleC2dump.py config.txt
 
         # Update-only mode, perform only update activity
-        python3 teleC2dump_multibot.py config.txt -mode updateonly
+        python3 teleC2dump.py config.txt -mode updateonly
 
 Options:
         -h, --help       Show this help message and exit
