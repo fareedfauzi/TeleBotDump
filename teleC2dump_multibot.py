@@ -7,9 +7,9 @@ from logging.handlers import RotatingFileHandler
 
 # Error handling logger. Max 1GB size of log.
 def setup_logger():
-    h = RotatingFileHandler('teleC2dump.log',maxBytes=1*1024*1024*1024,backupCount=1)
+    h = RotatingFileHandler('teleC2dump.log', maxBytes=1*1024*1024*1024, backupCount=1)
     h.setLevel(logging.ERROR)
-    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+    formatter = logging.Formatter('%(asctime)s - %levelname%- %message%', datefmt='%Y-%m-%d %H:%M:%S')
     h.setFormatter(formatter)
     logger = logging.getLogger()
     logger.setLevel(logging.ERROR)
@@ -69,7 +69,7 @@ def get_new_updates(botkey, botname, chatid, attacker_chat_id, last_update_id):
             time.sleep(5)
 
 # Processing bot username, messages and updates
-def processing_botData(botkey, attacker_chat_id, chatid):
+def processing_botData(botkey, attacker_chat_id, chatid, mode):
     try:
         # Retrieve bot's username
         bot_info = get_bot_username(botkey)
@@ -80,37 +80,45 @@ def processing_botData(botkey, attacker_chat_id, chatid):
         # Initialize start message id and update
         start_id = 1
         last_update_id = None
-        
+
         # Brute force all messages
-        brute_force_messages(botkey, botname, chatid, attacker_chat_id, start_id)
-        
+        if mode == "both":
+            brute_force_messages(botkey, botname, chatid, attacker_chat_id, start_id)
+
         # Retrieve new messages updates
         get_new_updates(botkey, botname, chatid, attacker_chat_id, last_update_id)
     except Exception as e:
         logging.error(f'Error in processing_botData - Bot: {botkey} - Error: {e}')
 
 def main():
-    if len(sys.argv) != 2:
-        print("Usage: python3 teleC2dump_multibot.py <config_file>")
+    if len(sys.argv) < 2 or len(sys.argv) > 4:
+        print("Usage: python3 teleC2dump_multibot.py <config_file> [-mode updateonly]")
         sys.exit(1)
 
-    if sys.argv[1] in ('-h'):
+    if sys.argv[1] in ('-h', '--help'):
         print("""
-                Usage: python3 teleC2dump_multibot.py <config_file>
+                Usage: python3 teleC2dump_multibot.py <config_file> [-mode updateonly]
 
                 Options:
                 -h, --help       Show this help message and exit
 
                 Arguments:
-                config_file      Configuration file containing bot tokens, attacker chat IDs, and your chat ID.
-                                 Each line in the file should have the format: <BOT TOKEN ID> <ATTACKER CHAT ID> <YOUR CHAT ID>
+                config_file          Configuration file containing bot tokens, attacker chat IDs, and your chat ID.
+                                     Each line in the file should have the format: <BOT TOKEN ID> <ATTACKER CHAT ID> <YOUR CHAT ID>
+                -mode updateonly     Only perform updates, skip brute force. Use case is when you only want the latest messages.
 
                 Example of config file format:
                 7342309939:AAFSgOLG_25mu-QZE8M7bSPufJJNknYj1JY 467115391 7093036821
                 1234567890:ABCDeFGH_1ijKlMnOpQrStUvWxYz 987654321 7093036821
             """)
         sys.exit(0)
+    
     config_file = sys.argv[1]
+    mode = "both"
+    
+    if len(sys.argv) == 3 and sys.argv[2] == "-mode updateonly":
+        mode = "updateonly"
+    
     setup_logger()
     print("Sit back and relax, TeleC2Dump script is running...")
 
@@ -121,7 +129,7 @@ def main():
         for i in lines:
             try:
                 botkey, attacker_chat_id, chatid = i.strip().split()
-                thread = threading.Thread(target=processing_botData, args=(botkey, attacker_chat_id, chatid))
+                thread = threading.Thread(target=processing_botData, args=(botkey, attacker_chat_id, chatid, mode))
                 threads.append(thread)
                 thread.start()
             except ValueError:
