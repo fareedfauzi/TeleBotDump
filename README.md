@@ -47,5 +47,17 @@ The script is inspired by the [Turncoat](https://github.com/DODC/turncoat) proje
 
 6. Run the script
 ```
-python3 teleC2dump_multibot.py config.txt
+$ python3 teleC2dump.py -h
+$ python3 teleC2dump.py config.txt -mode updateonly
+$ python3 teleC2dump.py config.txt
+Sit back and relax, TeleC2Dump script is running...
+
+Got a new bot token for the same campaign?
+Enter new bot token: XXXXXXXXX:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+Enter attacker chat ID: XXXXXXXX
+Enter your chat ID: XXXXXXX
+
+
+Got a new bot token for the same campaign?
+Enter new bot token:
 ```
