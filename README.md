@@ -47,8 +47,10 @@ The script is inspired by the [Turncoat](https://github.com/DODC/turncoat) proje
 
 6. Run the script
 ```
+# Help menu
 $ python3 teleC2dump.py -h
-$ python3 teleC2dump.py config.txt -mode updateonly
+
+# Run the script with default mode
 $ python3 teleC2dump.py config.txt
 Sit back and relax, TeleC2Dump script is running...
 
@@ -60,4 +62,7 @@ Enter your chat ID: XXXXXXX
 
 Got a new bot token for the same campaign?
 Enter new bot token:
+
+# Running the script with mode updateonly
+$ python3 teleC2dump.py config.txt -mode updateonly
 ```
