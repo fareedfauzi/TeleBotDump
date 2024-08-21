@@ -118,7 +118,7 @@ def parse_botInfo(botkey, attacker_chat_id, chatid, mode):
 def start_func(mode):
     while True:
         try:
-            print("[*] To add more bot tokens ↓")
+            print("[*] To add more Bot tokens at runtime ↓)")
             botkey = input("NEW BOT TOKEN (ex. 123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11): ")
             attacker_chat_id = input("ATTACKER CHAT ID (ex. 987654321): ")
             chatid = input("YOUR CHAT ID (ex. 1234567890): ")
