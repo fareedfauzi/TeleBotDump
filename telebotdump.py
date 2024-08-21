@@ -162,6 +162,7 @@ Example of config file format:
     mode = 'default'
     if len(sys.argv) == 4 and sys.argv[2] == '-mode' and sys.argv[3] == 'updateonly':
         mode = 'updateonly'
+        print("[*] MODE = updateonly")
 
     setup_logger()
 
