@@ -84,7 +84,7 @@ def main():
     check_jadx_installed()
 
     if len(sys.argv) != 2:
-        print('Usage: python Tele_botInfo_extractor.py /path/to/folder')
+        print('Usage: python apk_telebotinfo_extractor.py /path/to/folder')
         sys.exit(1)
     folder_path = sys.argv[1]
     if not os.path.isdir(folder_path):
