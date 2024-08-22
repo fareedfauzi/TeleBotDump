@@ -33,6 +33,33 @@ Then, go to `https://api.telegram.org/bot<BOT_TOKEN>/getMe` to determine the bot
 }
 ```
 
+If we analyze malicious APK that abusing Telegram as C2, we can use `apk_telebotinfo_extractor.py`. Example usage:
+```
+remnux@siftworkstation: ~/work
+$ python3 mrtria_telegram_extractor.py apks/
+[*] Processing apks/de9384577e28c52f8dc690b141098969
+[*] Decompiling APK...
+[*] Finding Telegram bot tokens and chat IDs...
+[/] MD5: de9384577e28c52f8dc690b141098969
+Found Telegram Bot Token: 7428836801:AAEhvj2eEKUjH5Rg76sr02tm6ubgqmpVXNA (Username: okeetessuc_bot)
+Found Telegram Chat ID: 7273401796
+
+[*] Processing apks/d6903bce8a4ee05f40400158686cd298
+[*] Decompiling APK...
+[X] MD5: d6903bce8a4ee05f40400158686cd298
+Decompilation failed. Reason: No dex files found in the APK.
+Please run `jadx -v` for more information.
+Tips: Proceed using GDA for manual extraction.
+
+[*] Processing apks/96143c28e7937f64ecdb6f87510afbbe
+[*] Decompiling APK...
+[*] Finding Telegram bot tokens and chat IDs...
+[/] MD5: 96143c28e7937f64ecdb6f87510afbbe
+Found Telegram Bot Token: 6460021704:AAEqy8oTs2aFCBf6Z1_4oeSVSeRuHkf8BJc (Username: dmspmbot)
+Found Telegram Bot Token: 7052659548:AAEAiHIDq_Wtr0sy9DSUlx2Zi4Rp2PaEGhA (Username: weachatt_bot)
+Found Telegram Chat ID: 6598930249
+```
+
 ## Join the bot channel
 Go to Telegram, search the bot by username in the search bar and join the bot channel by click "/start" button.
 
