@@ -5,6 +5,7 @@ import tempfile
 import glob
 import re
 import hashlib
+import requests
 
 def check_jadx_installed():
     try:
@@ -21,8 +22,22 @@ def calculate_md5(file_path):
             hash_md5.update(chunk)
     return hash_md5.hexdigest()
 
+def get_bot_username(token):
+    try:
+        response = requests.get(f"https://api.telegram.org/bot{token}/getMe")
+        if response.status_code == 200:
+            data = response.json()
+            if data.get("ok"):
+                return data["result"]["username"]
+            else:
+                return "Failed to retrieve bot username"
+        else:
+            return "Failed to connect to Telegram API"
+    except requests.exceptions.RequestException as e:
+        return f"Error: {e}"
+
 def extract_telegram_data_from_apk(apk_path):
-    print(f"Processing {apk_path}")
+    print(f"[*] Processing {apk_path}")
     md5_hash = calculate_md5(apk_path)
 
     print("[*] Decompiling APK...")
@@ -31,10 +46,13 @@ def extract_telegram_data_from_apk(apk_path):
         
         # Check if the decompilation encountered "No dex files found"
         if b'No dex files found' in result.stdout:
-            print(f"[{md5_hash}] Decompilation failed. Reason: No dex files found in the APK. For more info, run `jadx -v`. Proceed using GDA for manual extraction. \n")
+            print(f"[x] MD5: {md5_hash}")
+            print(f"Decompilation failed. Reason: No dex files found in the APK.")
+            print(f"Please run `jadx -v` for more information.")
+            print(f"Tips: Proceed using GDA for manual extraction.\n")
             return
         
-        print("[*] Finding Telegram bot tokens and chat IDs...\n")
+        print("[*] Finding Telegram bot tokens and chat IDs...")
         java_files = glob.glob(os.path.join(temp_dir, '**', '*.java'), recursive=True)
         bot_tokens = set()
         chat_ids = set()
@@ -52,9 +70,10 @@ def extract_telegram_data_from_apk(apk_path):
                 chat_ids.update(chat_id_matches)
 
         if bot_tokens or chat_ids:
-            print(f"[{md5_hash}]")
+            print(f"[/] MD5: {md5_hash}")
             for token in bot_tokens:
-                print(f"Found Telegram Bot Token: {token}")
+                bot_username = get_bot_username(token)
+                print(f"Found Telegram Bot Token: {token} (Username: {bot_username})")
             for chat_id in chat_ids:
                 print(f"Found Telegram Chat ID: {chat_id}")
             print()
@@ -65,7 +84,7 @@ def main():
     check_jadx_installed()
 
     if len(sys.argv) != 2:
-        print('Usage: python telebotinfo_extractor.py /path/to/folder')
+        print('Usage: python Tele_botInfo_extractor.py /path/to/folder')
         sys.exit(1)
     folder_path = sys.argv[1]
     if not os.path.isdir(folder_path):
