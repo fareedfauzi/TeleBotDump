@@ -12,8 +12,8 @@ Features:
 ## Get bot information
 Extract the bot token ID and attacker chat ID from the malware. For example:
 ```
-Bot token => 7342309939:AAFSgOLG_25mu-QZE8M7bSPufJJNknYj1JY
-Chat ID => 7043536123
+Bot token => 123456789:ABCDEFGHIJKLMNOPQRSTUVWXYZ
+Chat ID => 123456789
 ```
 
 Then, go to `https://api.telegram.org/bot<BOT_TOKEN>/getMe` to determine the bot's username. It will return something like this:
@@ -21,7 +21,7 @@ Then, go to `https://api.telegram.org/bot<BOT_TOKEN>/getMe` to determine the bot
 {
   "ok": true,
   "result": {
-    "id": 7342309939,
+    "id": 123456789,
     "is_bot": true,
     "first_name": "testbowt!",
     "username": "pocrobot_bot",
@@ -44,8 +44,8 @@ Open `config.txt` and input all the token IDs, chat IDs of the attacker, and you
 - Each line in the file should have the format: `<BOT TOKEN ID> <ATTACKER CHAT ID> <YOUR CHAT ID>`.
 - Example of the config file format:
 ```
-7342309939:AAFSgOLG_25mu-QZE8M7bSPufJJNknYj1JY 467115391 7093134421
-1234567890:ABCDeFGH_1ijKlMnOpQrStUvWxYz 987654321 7093134421
+1234567890:AAFSgOABCDeFGH_1ijKlMnOpQrStUvWxYz 123415391 123456789
+1234567890:ABCDeFGH_1ijKlMnOpQrStUvWxYz 987654321 123456789
 ```
 
 ## Usage of the script
@@ -70,8 +70,8 @@ Arguments:
         -mode updateonly    Only perform updates, skip brute force
 
 Example of config file format:
-        7342309939:AAFSgOLG_25mu-QZE8M7bSPufJJNknYj1JY 467115391 7093036821
-        1234567890:ABCDeFGH_1ijKlMnOpQrStUvWxYz 987654321 7093036821
+        1234567890:AAFSgOABCDeFGH_1ijKlMnOpQrStUvWxYz 123415391 123456789
+        1234567890:ABCDeFGH_1ijKlMnOpQrStUvWxYz 987654321 123456789
 ```
 
 ### Run the script with default mode
