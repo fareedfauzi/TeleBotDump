@@ -57,18 +57,32 @@ def extract_telegram_data_from_apk(apk_path):
         bot_tokens = set()
         chat_ids = set()
 
+        # Step 1: Collect bot tokens first
+        bot_token_patterns = re.compile(r'\d{9,10}:[A-Za-z0-9_-]{35,}')
+        
         for file_path in java_files:
             with open(file_path, 'r', encoding='utf-8') as file:
                 content = file.read()
 
-                # Search for Telegram bot token in the form of "bot<digits>:<alphanumeric>"
-                bot_token_matches = re.findall(r'https://api\.telegram\.org/bot(\d+:[\w-]+)', content)
+                # Search for bot tokens in the form of "digits:alphanumeric"
+                bot_token_matches = bot_token_patterns.findall(content)
                 bot_tokens.update(bot_token_matches)
 
-                # Search for Telegram chat IDs in the form of "chat_id=<digits>"
-                chat_id_matches = re.findall(r'chat_id=(\d+)', content)
-                chat_ids.update(chat_id_matches)
+        # Step 2: After collecting bot tokens, find chat_ids, sendMessage, or api.telegram.org but exclude parts of bot tokens
+        for file_path in java_files:
+            with open(file_path, 'r', encoding='utf-8') as file:
+                content = file.read()
 
+                # Search for chat_id, sendMessage, or api.telegram.org and extract chat ID
+                relevant_sections = re.finditer(r'(chat_id|sendMessage|api\.telegram\.org)[^0-9-]*(-?\d{9,10})', content)
+                
+                for match in relevant_sections:
+                    chat_id = match.group(2)
+                    # Ensure the chat_id is not part of any bot token
+                    if not any(chat_id == bot_token.split(':')[0] for bot_token in bot_tokens):
+                        chat_ids.add(chat_id)
+
+        # Output results
         if bot_tokens or chat_ids:
             print(f"[/] MD5: {md5_hash}")
             for token in bot_tokens:
