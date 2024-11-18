@@ -10,12 +10,14 @@ Features:
 # How to use it?
 
 ## Get bot information
+
 Extract the bot token ID and attacker chat ID from the malware. For example:
 ```
 Bot token => 123456789:ABCDEFGHIJKLMNOPQRSTUVWXYZ
 Chat ID => 123456789
 ```
 
+Alternative method to get username bot: https://teletoken.info/
 Then, go to `https://api.telegram.org/bot<BOT_TOKEN>/getMe` to determine the bot's username. It will return something like this:
 ```json
 {
